@@ -50,4 +50,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/overviewTV"/>
 
+    <TextView
+       android:paddingTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/reviewTV"/>
+
 </LinearLayout>

@@ -80,7 +80,8 @@ public class MainActivityFragment extends Fragment {
                         putExtra("overview" , item.getOverview()).
                         putExtra("rating"   , item.getRating()).
                         putExtra("rDate"    , item.getReleaseDate()).
-                        putExtra("bgURL"    , item.getBackgroundUrl()).
+                        putExtra("id"    , item.getMovieID()).
+                        putExtra("pURL"     , item.getPosterURL()).
                         putExtra("pURL"     , item.getPosterURL());
 
                 //Start details activity
