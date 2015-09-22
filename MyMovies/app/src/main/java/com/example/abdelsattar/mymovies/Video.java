@@ -7,17 +7,17 @@ public class Video {
     private String name;
     private String site;
     private String type;
-    private String videoURL;
+    private String Url;
     private String id;
 
     public Video(){
 
     }
-    public Video(String name, String site, String type, String videoURL, String id) {
+    public Video(String name, String site, String type, String Url, String id) {
         this.name = name;
         this.site = site;
         this.type = type;
-        this.videoURL=videoURL;
+        this.Url=Url;
         this.id = id;
     }
 
@@ -37,9 +37,9 @@ public class Video {
         return id;
     }
 
-    public String getVideoURL() {
+    public String getUrl() {
 
-        return videoURL;
+        return Url;
     }
 
     public void setName(String name) {
@@ -54,8 +54,8 @@ public class Video {
         this.type = type;
     }
 
-    public void setVideoURL(String videoURL) {
-        this.videoURL = videoURL;
+    public void setUrl(String Url) {
+        this.Url = Url;
     }
 
     public void setId(String id) {

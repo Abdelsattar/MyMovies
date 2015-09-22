@@ -1,59 +1,85 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.abdelsattar.mymovies.detailMovieFragment"
-    android:orientation="vertical" >
-
-    <TextView android:text="Title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/titleTV"
-        android:background="#508df6"
-        android:textColor="#ffffff"
-        android:padding="5dp"
-        android:textSize="40sp"/>
+    android:orientation="vertical"
+    android:fillViewport="true">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="2"
-        android:paddingTop="10dp"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/bgImage"/>
+        android:orientation="vertical"
+        >
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="5dp">
+        <!-- #508df6 blue -->
 
-            <TextView android:text="Rating"
+        <TextView android:text="Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:id="@+id/titleTV"
+                android:background="#fff63525"
+                android:textColor="#ffffff"
+                android:padding="20dp"
+                android:textSize="40sp"/>
+
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/ratingTV"/>
+                android:weightSum="2"
+                android:paddingTop="10dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:id="@+id/bgImage"/>
 
-            <TextView android:text="Release Date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/rDateTV"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <TextView android:text="Release Date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="25sp"
+                        android:id="@+id/rDateTV"/>
+
+                    <TextView android:text="Rating"
+                        android:padding="10dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:id="@+id/ratingTV"/>
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Mark As Favourite"
+                        android:id="@+id/button" />
+
+
+                </LinearLayout>
+
             </LinearLayout>
 
-     </LinearLayout>
+        <TextView
+                android:padding="15dp"
+                android:text="summary"
+                  android:textSize="15sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/overviewTV"/>
 
-    <TextView
-        android:padding="7dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/overviewTV"/>
+        <ExpandableListView
+            android:id="@+id/lvExp"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"/>
 
-    <TextView
-       android:paddingTop="50dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/reviewTV"/>
+    </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

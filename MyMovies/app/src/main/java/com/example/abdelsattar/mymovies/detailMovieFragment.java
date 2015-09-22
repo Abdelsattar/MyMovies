@@ -1,5 +1,6 @@
 package com.example.abdelsattar.mymovies;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,15 +27,27 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class detailMovieFragment extends Fragment {
-    private ArrayList<Review> reviewsData;
-    private ArrayList<Video> videosData;
+    private ArrayList<Object> reviewsData;
+    private ArrayList<Object> videosData;
 
+    ExpandableListAdapter listAdapter;
+    ExpandableListView expListView;
+    List<String> listDataHeader;
+
+    // now to fill this with data getting from API to use it in the Exapnadable list
+//    List<Object> videosObjects ;
+//    List<Object> reviewsObjects ;
+
+    HashMap<String, List<Object>> listDataChild;
 
     public detailMovieFragment() {
     }
@@ -66,23 +80,148 @@ public class detailMovieFragment extends Fragment {
        // videoDetailTask.execute(id);
         videoDetailTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
 
+
         FetchReviewDetailTask reviewDetailTask = new FetchReviewDetailTask();
 //        reviewDetailTask.execute(id);
         reviewDetailTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
 
+  //       Log.v("Review",reviewsData.get(0).getContent().toString());
 //        TextView review = (TextView) rootView.findViewById(R.id.reviewTV);
 //        review.setText(reviewsData.get(0).getContent().toString());
+        /******************  implementing Expandable list   ************************** */
+
+        // get the listview
+        expListView = (ExpandableListView) rootView.findViewById(R.id.lvExp);
+
+        // preparing list data
+   //     prepareListDataReview();
+
+        listDataChild = new HashMap<String, List<Object>>();
+        listDataHeader = new ArrayList<String>();
+        listDataHeader.add("Videos");
+        listDataHeader.add("Reviews");
+
+        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
+
+        // setting list adapter
+        expListView.setAdapter(listAdapter);
+
+
+        // Listview on child click listener
+        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosition, long id) {
+                // TODO Auto-generated method stub
+//                Toast.makeText(
+//                        getActivity().getApplicationContext(),
+//                        listDataHeader.get(groupPosition)
+//                                + " : " + groupPosition+" "
+//                                + listDataChild.get(
+//                                listDataHeader.get(groupPosition)).get(
+//                                childPosition)
+//                        , Toast.LENGTH_SHORT)
+//                        .show();
+                String UrlToView;
+                if(groupPosition==0){
+                   Video video= (Video) listDataChild.get(listDataHeader.get(groupPosition))
+                            .get(childPosition);
+                    UrlToView = video.getUrl();
+                }
+                else {
+
+                    Review review= (Review) listDataChild.get(listDataHeader.get(groupPosition))
+                            .get(childPosition);
+                    UrlToView = review.getUrl();
+                }
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UrlToView)));
+                return false;
+            }
+        });
+
+        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v,int groupPosition, long id) {
+                setListViewHeight(parent, groupPosition);
+                return false;
+            }
+        });
+
+
+        /****************** *****************************  ************************** */
+
 
 
         return rootView;
 
     }
+    private void setListViewHeight(ExpandableListView listView, int group) {
+        ExpandableListAdapter listAdapter =
+                (ExpandableListAdapter) listView.getExpandableListAdapter();
+        int totalHeight = 0;
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(),
+                View.MeasureSpec.EXACTLY);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
+            View groupItem = listAdapter.getGroupView(i, false, null, listView);
+            groupItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
 
+            totalHeight += groupItem.getMeasuredHeight();
+
+            if (((listView.isGroupExpanded(i)) && (i != group))
+                    || ((!listView.isGroupExpanded(i)) && (i == group))) {
+                for (int j = 0; j < listAdapter.getChildrenCount(i); j++) {
+                    View listItem = listAdapter.getChildView(i, j, false, null,
+                            listView);
+                    listItem.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+
+                    totalHeight += listItem.getMeasuredHeight();
+
+                }
+            }
+        }
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        int height = totalHeight
+                + (listView.getDividerHeight() * (listAdapter.getGroupCount() - 1));
+        if (height < 10)
+            height = 200;
+        params.height = height;
+        listView.setLayoutParams(params);
+        listView.requestLayout();
+
+    }
 
     public class FetchVideoDetailTask extends AsyncTask<String, Void, Video[]> {
 
         private final String LOG_TAG = FetchVideoDetailTask.class.getSimpleName();
 
+
+      @Override
+      protected void onPostExecute(Video[] result) {
+          //  /**************
+          if (result != null) {
+              Toast.makeText(getActivity(),
+                      "videos is processing now!",
+                      Toast.LENGTH_SHORT).
+                      show();
+
+              videosData = new ArrayList<Object>(Arrays.asList(result));
+              //           mGridAdapter.setGridData(mGridData);
+              listDataChild.put(listDataHeader.get(0), videosData);
+
+          } else {
+              Toast.makeText(getActivity(),
+                      "Failed to fetch videos!",
+                      Toast.LENGTH_SHORT).
+                      show();
+          }
+          //  ********************/
+          // New data is back from the server.  Hooray!
+          //        mProgressBar.setVisibility(View.GONE);
+
+      }
         /**
          * Take the String representing the complete forecast in JSON Format and
          * pull out the data we need to construct the Strings needed for the wireframes.
@@ -93,6 +232,8 @@ public class detailMovieFragment extends Fragment {
         private Video[] getvideoDataFromJson(String videoJsonStr)
                 throws JSONException {
 
+//            videosObjects = new ArrayList<Object>();
+
             final String Results_ID = "results";
             final String Video_ID = "id";
             final String Name_ID = "name";
@@ -102,16 +243,16 @@ public class detailMovieFragment extends Fragment {
             final String Video_URL_Base = "https://www.youtube.com/watch?v=";
 
             JSONObject VideoJson = new JSONObject(videoJsonStr);
-            JSONArray videowArray = VideoJson.getJSONArray(Results_ID);
+            JSONArray videoArray = VideoJson.getJSONArray(Results_ID);
 
 
-            Video[] resultStrs = new Video[videowArray.length()];
+            Video[] resultStrs = new Video[videoArray.length()];
             String id, name,site,type,key,videoURL;
             Video videoObj;
 
-            for (int i = 0; i < videowArray.length(); i++) {
+            for (int i = 0; i < videoArray.length(); i++) {
                 // Get the JSON object representing the day
-                JSONObject reviewDetails = videowArray.getJSONObject(i);
+                JSONObject reviewDetails = videoArray.getJSONObject(i);
 
                 id = reviewDetails.getString(Video_ID);
                 name = reviewDetails.getString(Name_ID);
@@ -124,11 +265,12 @@ public class detailMovieFragment extends Fragment {
                 videoObj.setId(id);
                 videoObj.setName(name);
                 videoObj.setSite(site);
-                videoObj.setVideoURL(videoURL);
+                videoObj.setUrl(videoURL);
                 videoObj.setType(type);
 
-                Log.v(LOG_TAG, " video string: " +name +" "+ type+"  " +site+" "+videoURL);
+              //  Log.v(LOG_TAG, " video string: " +name +" "+ type+"  " +site+" "+videoURL);
                 resultStrs[i] = videoObj;
+       //         videosObjects.add(videoObj);
 //                videosData.add(videoObj);
             }
             return resultStrs;
@@ -216,29 +358,8 @@ public class detailMovieFragment extends Fragment {
             return null;
         }
 
-        @Override
-        protected void onPostExecute(Video[] result) {
-            //  /**************
-            if (result != null) {
-            Toast.makeText(getActivity(),
-                    "videos is processing now!",
-                    Toast.LENGTH_SHORT).
-                    show();
-
-                //           mGridAdapter.setGridData(mGridData);
-
-            } else {
-            Toast.makeText(getActivity(),
-                    "Failed to fetch videos!",
-                    Toast.LENGTH_SHORT).
-                    show();
-            }
-            //  ********************/
-            // New data is back from the server.  Hooray!
-            //        mProgressBar.setVisibility(View.GONE);
-
-        }
     }
+
 
     public class FetchReviewDetailTask extends AsyncTask<String, Void, Review[]> {
 
@@ -383,7 +504,11 @@ public class detailMovieFragment extends Fragment {
                         Toast.LENGTH_SHORT).
                         show();
 
+                reviewsData = new ArrayList<Object>(Arrays.asList(result));
                 //           mGridAdapter.setGridData(mGridData);
+                // put the data under the list Group
+                listDataChild.put(listDataHeader.get(1), reviewsData);
+
 
             } else {
                 Toast.makeText(getActivity(),
@@ -397,5 +522,7 @@ public class detailMovieFragment extends Fragment {
 
         }
     }
+
+
 
 }
