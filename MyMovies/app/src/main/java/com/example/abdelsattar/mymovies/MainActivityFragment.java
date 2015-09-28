@@ -40,6 +40,13 @@ public class MainActivityFragment extends Fragment {
     private ImageAdapter mGridAdapter;
     private ArrayList<Movie> mGridData;
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Add this line in order for this fragment to handle menu events.
+        setHasOptionsMenu(true);
+    }
+
     public MainActivityFragment() {
     }
 
@@ -48,7 +55,9 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        /********************** new code******************/
+        setHasOptionsMenu(true);
+
+     /********************** new code******************/
 
         mGridView = (GridView) rootView.findViewById(R.id.gridView);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
@@ -65,17 +74,8 @@ public class MainActivityFragment extends Fragment {
                 Movie item = (Movie) parent.getItemAtPosition(position);
 
                 Intent intent = new Intent(getActivity(), detailMovie.class);
-//                              ImageView imageView = (ImageView) v.findViewById(R.id.grid_item_image);
-//
-//                // Interesting data to pass across are the thumbnail size/location, the
-//                // resourceId of the source bitmap, the picture description, and the
-//                // orientation (to avoid returning back to an obsolete configuration if
-//                // the device rotates again in the meantime)
-//
-//                int[] screenLocation = new int[2];
-//                imageView.getLocationOnScreen(screenLocation);
 
-                //Pass the image title and url to DetailsActivity
+                //Pass the movie details DetailsActivity
                 intent.putExtra("title"     , item.getTitle()).
                         putExtra("overview" , item.getOverview()).
                         putExtra("rating"   , item.getRating()).
@@ -185,7 +185,9 @@ public class MainActivityFragment extends Fragment {
             BufferedReader reader = null;
             // Will contain the raw JSON response as a string.
             String movieJSONStr = null;
-            String sortType = "popularity.desc";
+            //vote_average.desc & popularity.desc"
+            String sortTypePopular = "popularity.desc";
+            String sortTypeRate = "vote_average.desc";
 
             try {
                 // Here Built URL
@@ -197,7 +199,7 @@ public class MainActivityFragment extends Fragment {
                 final String SORT_PARAM = "sort_by";
 
                 Uri builtUri = Uri.parse(Base_URLWithKey).buildUpon()
-                        .appendQueryParameter(SORT_PARAM, sortType)
+                        .appendQueryParameter(SORT_PARAM, sortTypePopular)
                         .build();
                 URL url = new URL(builtUri.toString());
 

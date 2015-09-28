@@ -3,4 +3,21 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_detail_movie">detailMovie</string>
+
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Label for the temperature units preference [CHAR LIMIT=30] -->
+    <string name="pref_sort_label">Sort By </string>
+
+    <string name="pref_sort_label_popular">Most Popular</string>
+    <string name="pref_sort_label_rate">Highest Rate</string>
+    <string name="pref_sort_label_favourite">Favourite Movies</string>
+
+    <string name="pref_sort_key" translatable="false">sort</string>
+
+    <string name="pref_sort_popular" translatable="false">popularity.desc</string>
+    <string name="pref_sort_rate" translatable="false">vote_average.desc</string>
+    <string name="pref_sort_favourite" translatable="false">favourite</string>
+
 </resources>

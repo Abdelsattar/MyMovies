@@ -48,6 +48,12 @@ public class detailMovieFragment extends Fragment {
 //    List<Object> reviewsObjects ;
 
     HashMap<String, List<Object>> listDataChild;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Add this line in order for this fragment to handle menu events.
+        setHasOptionsMenu(true);
+    }
 
     public detailMovieFragment() {
     }
@@ -157,6 +163,7 @@ public class detailMovieFragment extends Fragment {
         return rootView;
 
     }
+
     private void setListViewHeight(ExpandableListView listView, int group) {
         ExpandableListAdapter listAdapter =
                 (ExpandableListAdapter) listView.getExpandableListAdapter();
