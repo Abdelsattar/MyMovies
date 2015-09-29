@@ -9,6 +9,7 @@
 
     <!-- Label for the temperature units preference [CHAR LIMIT=30] -->
     <string name="pref_sort_label">Sort By </string>
+    <string name="pref_sort_default">Most Popular</string>
 
     <string name="pref_sort_label_popular">Most Popular</string>
     <string name="pref_sort_label_rate">Highest Rate</string>

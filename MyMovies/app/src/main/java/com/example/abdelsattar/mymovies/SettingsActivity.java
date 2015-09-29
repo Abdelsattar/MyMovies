@@ -42,10 +42,11 @@ public class SettingsActivity extends PreferenceActivity
                         .getDefaultSharedPreferences(preference.getContext())
                         .getString(preference.getKey(), ""));
     }
-
+// if value changed in shared preference will change to set value
     @Override
     public boolean onPreferenceChange(Preference preference, Object value) {
         String stringValue = value.toString();
+
 
         if (preference instanceof ListPreference) {
             // For list preferences, look up the correct display value in
@@ -57,6 +58,7 @@ public class SettingsActivity extends PreferenceActivity
             }
         } else {
             // For other preferences, set the summary to the value's simple string representation.
+
             preference.setSummary(stringValue);
         }
         return true;

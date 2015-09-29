@@ -1,9 +1,12 @@
 package com.example.abdelsattar.mymovies;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -89,16 +92,32 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
-
-        //Start download
-        new FetchMoviesTask().execute();
         mProgressBar.setVisibility(View.VISIBLE);
-
         /*************************************************/
         return rootView;
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        //Start download
+        String Sort_By = getPreferredLocation(getActivity());
+        if(Sort_By=="favourite"){
+
+        }else {
+            mGridData.clear();
+            new FetchMoviesTask().execute(Sort_By);
+        }
+
+    }
+
+    public static String getPreferredLocation(Context context) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getString(context.getString(R.string.pref_sort_key),
+                context.getString(R.string.pref_sort_default));
+    }
 
     public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
 
@@ -192,14 +211,14 @@ public class MainActivityFragment extends Fragment {
             try {
                 // Here Built URL
                 //http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&
-                // api_key=8ab3b4fc3a364ee0e493c5b0aba84ed1
+                // api_key=[your Key]
                 //TODO here u must go the webiste and get your own key by regesiter in it
                 final String Base_URLWithKey = "http://api.themoviedb.org/3/discover/movie?" +
-                        "api_key=8ab3b4fc3a364ee0e493c5b0aba84ed1";
+                        "api_key=[Your Key]";
                 final String SORT_PARAM = "sort_by";
 
                 Uri builtUri = Uri.parse(Base_URLWithKey).buildUpon()
-                        .appendQueryParameter(SORT_PARAM, sortTypePopular)
+                        .appendQueryParameter(SORT_PARAM, params[0])
                         .build();
                 URL url = new URL(builtUri.toString());
 
