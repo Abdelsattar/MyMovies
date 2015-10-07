@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.example.abdelsattar.mymovies.detailMovieFragment"
     android:orientation="vertical"
+    android:id="@+id/scrollView"
     android:fillViewport="true">
 
     <LinearLayout
@@ -60,12 +61,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Mark As Favourite"
-                        android:id="@+id/button" />
+                        android:id="@+id/favourite" />
 
 
                 </LinearLayout>
 
             </LinearLayout>
+
 
         <TextView
                 android:padding="15dp"

@@ -1,14 +1,20 @@
 package com.example.abdelsattar.mymovies;
 
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,17 +41,19 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class detailMovieFragment extends Fragment {
+public class detailMovieFragment extends Fragment implements  View.OnClickListener{
     private ArrayList<Object> reviewsData;
     private ArrayList<Object> videosData;
 
+    private ArrayList<Review> reviewsString;
+    private ArrayList<Video> videosString;
+
+    Movie movieObj;
     ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader;
 
     // now to fill this with data getting from API to use it in the Exapnadable list
-//    List<Object> videosObjects ;
-//    List<Object> reviewsObjects ;
 
     HashMap<String, List<Object>> listDataChild;
     @Override
@@ -58,49 +66,65 @@ public class detailMovieFragment extends Fragment {
     public detailMovieFragment() {
     }
 
+    //TODO implement this method
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_detail_movie, container, false);
         Bundle bundle = getActivity().getIntent().getExtras();
+        movieObj = new Movie();
 
         TextView titleTV = (TextView) rootView.findViewById(R.id.titleTV);
         TextView overviewTV = (TextView) rootView.findViewById(R.id.overviewTV);
         TextView releaseDateTV = (TextView) rootView.findViewById(R.id.rDateTV);
         TextView ratingTV = (TextView) rootView.findViewById(R.id.ratingTV);
 
-        titleTV.setText(bundle.getString("title"));
-        overviewTV.setText(bundle.getString("overview"));
-        releaseDateTV.setText(bundle.getString("rDate"));
-        ratingTV.setText(bundle.getString("rating"));
+        movieObj.setTitle(bundle.getString("title"));
+        movieObj.setMovieID(bundle.getString("id"));
+        movieObj.setPosterURL(bundle.getString("pURL"));
+        movieObj.setOverview(bundle.getString("overview"));
+        movieObj.setRating(bundle.getString("rating"));
+        movieObj.setRating(bundle.getString("rDate"));
 
-        String id =bundle.getString("id");
+        titleTV.setText(movieObj.getTitle());
+        overviewTV.setText(movieObj.getOverview());
+        releaseDateTV.setText(movieObj.getReleaseDate());
+        ratingTV.setText(movieObj.getRating());
+
 
         ImageView bgImage = (ImageView) rootView.findViewById(R.id.bgImage);
         Picasso.with(getActivity())
                 .load(bundle.getString("pURL"))
                 .into(bgImage);
 
-
         FetchVideoDetailTask videoDetailTask = new FetchVideoDetailTask();
-       // videoDetailTask.execute(id);
-        videoDetailTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
-
+        videoDetailTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,movieObj.getMovieID());
 
         FetchReviewDetailTask reviewDetailTask = new FetchReviewDetailTask();
-//        reviewDetailTask.execute(id);
-        reviewDetailTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,id);
-
-  //       Log.v("Review",reviewsData.get(0).getContent().toString());
-//        TextView review = (TextView) rootView.findViewById(R.id.reviewTV);
-//        review.setText(reviewsData.get(0).getContent().toString());
-        /******************  implementing Expandable list   ************************** */
+        reviewDetailTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,movieObj.getMovieID());
+     /******************  implementing Expandable list   ************************** */
 
         // get the listview
         expListView = (ExpandableListView) rootView.findViewById(R.id.lvExp);
 
         // preparing list data
-   //     prepareListDataReview();
 
         listDataChild = new HashMap<String, List<Object>>();
         listDataHeader = new ArrayList<String>();
@@ -109,11 +133,7 @@ public class detailMovieFragment extends Fragment {
 
         listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
 
-        // setting list adapter
         expListView.setAdapter(listAdapter);
-
-
-        // Listview on child click listener
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
             @Override
@@ -131,7 +151,7 @@ public class detailMovieFragment extends Fragment {
 //                        .show();
                 String UrlToView;
                 if(groupPosition==0){
-                   Video video= (Video) listDataChild.get(listDataHeader.get(groupPosition))
+                    Video video= (Video) listDataChild.get(listDataHeader.get(groupPosition))
                             .get(childPosition);
                     UrlToView = video.getUrl();
                 }
@@ -155,13 +175,86 @@ public class detailMovieFragment extends Fragment {
             }
         });
 
-
         /****************** *****************************  ************************** */
-
-
+        Button favourite = (Button) rootView.findViewById(R.id.favourite);
+        favourite.setOnClickListener(this);
 
         return rootView;
 
+   }
+
+
+    @Override
+    public void onClick(View view) {
+
+                Log.d("Videos", "d5l favourite");
+                // i will put all data of the movie in an shared prefrence based on id
+                // and put also reviews videos details
+                // will diffrenation bu delmiter
+                SharedPreferences pref =
+                        getActivity().getSharedPreferences(
+                                getString(R.string.pref_movie_name),
+                                Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+
+                String Movies = pref.getString(getString(R.string.pref_movie_key), "");
+                String  movieDetail = "";
+               // Log.d("Movie from sharedprefrence", Movies);
+                movieDetail= movieObj.getMovieID()+'|'
+                            + movieObj.getPosterURL()+'|'
+                            + movieObj.getBackgroundUrl()+'|'
+                            + movieObj.getTitle()+'|'
+                            + movieObj.getOverview()+'|'
+                            + movieObj.getReleaseDate()+'|'
+                            + movieObj.getRating()+'#';
+
+//                if (Movies != null) {
+//
+//
+//                    Log.d("Videos", "ifaya");
+//                } else {
+
+                    boolean exist = pref.getBoolean(movieObj.getMovieID(), false);
+                    if(!exist){
+                        Movies+=movieDetail;
+                        String videos="";
+                        String reviews="";
+
+                        editor.putString(getString(R.string.pref_movie_key),Movies);
+                        editor.putBoolean(movieObj.getMovieID(),true);
+
+                        //buliding videos
+                        for(int i=0 ; i<videosString.size(); i++){
+                            videos += videosString.get(i).getName()+'|'
+                                    +videosString.get(i).getUrl()
+                                    +'#';
+                        }
+                        //buliding Reviews
+                        for(int i=0 ; i<reviewsString.size(); i++){
+                            reviews += reviewsString.get(i).getAuthor()+'|'
+                                    +reviewsString.get(i).getContent()+'|'
+                                    +reviewsString.get(i).getUrl()+
+                                    +'#';
+                        }
+
+                        editor.putString( movieObj.getMovieID()+'|'
+                                          +"videos"
+                                ,Movies);
+                        editor.putString( movieObj.getMovieID()+'|'
+                                          +"reviews"
+                                ,reviews);
+                        Log.d("Videos", videos);
+                        Log.d("Reviews", reviews);
+                        editor.commit();
+
+                        videos = pref
+                        Log.d("Videos from pref when click", videos);
+                        Log.d("Reviewsfrom pref when click", reviews);
+
+
+    //                }
+
+                }
     }
 
     private void setListViewHeight(ExpandableListView listView, int group) {
@@ -200,6 +293,7 @@ public class detailMovieFragment extends Fragment {
 
     }
 
+
     public class FetchVideoDetailTask extends AsyncTask<String, Void, Video[]> {
 
         private final String LOG_TAG = FetchVideoDetailTask.class.getSimpleName();
@@ -215,6 +309,7 @@ public class detailMovieFragment extends Fragment {
                       show();
 
               videosData = new ArrayList<Object>(Arrays.asList(result));
+              videosString = new ArrayList<Video>(Arrays.asList(result));
               //           mGridAdapter.setGridData(mGridData);
               listDataChild.put(listDataHeader.get(0), videosData);
 
@@ -512,6 +607,8 @@ public class detailMovieFragment extends Fragment {
                         show();
 
                 reviewsData = new ArrayList<Object>(Arrays.asList(result));
+                reviewsString = new ArrayList<Review>(Arrays.asList(result));
+
                 //           mGridAdapter.setGridData(mGridData);
                 // put the data under the list Group
                 listDataChild.put(listDataHeader.get(1), reviewsData);

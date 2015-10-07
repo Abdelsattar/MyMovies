@@ -14,9 +14,14 @@ public class detailMovie extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_movie);
 
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                     .add(R.id.movie_detail_container,
+                             new detailMovieFragment())
+                    .commit();
+        }
+
     }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

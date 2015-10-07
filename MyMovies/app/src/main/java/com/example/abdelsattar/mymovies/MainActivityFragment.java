@@ -40,6 +40,9 @@ public class MainActivityFragment extends Fragment {
     private GridView mGridView;
     private ProgressBar mProgressBar;
 
+
+    ArrayList<Review> reviews;
+    ArrayList<Video> videos;
     private ImageAdapter mGridAdapter;
     private ArrayList<Movie> mGridData;
 
@@ -104,13 +107,127 @@ public class MainActivityFragment extends Fragment {
 
         //Start download
         String Sort_By = getPreferredLocation(getActivity());
-        if(Sort_By=="favourite"){
+                  // favourite
+        String Fav =getString(R.string.pref_sort_favourite);
+        String pop =getString(R.string.pref_sort_popular);
+        String rate =getString(R.string.pref_sort_rate);
 
-        }else {
+        Toast.makeText(getActivity(),
+                "hey_there "+Sort_By ,
+                Toast.LENGTH_SHORT)
+                .show();
+        if ( Sort_By == pop || Sort_By == rate ) {
+            Toast.makeText(getActivity(),
+                    "hey_there "+Sort_By ,
+                    Toast.LENGTH_SHORT)
+                    .show();
+          //  Log.d("Sort BY",Sort_By);
             mGridData.clear();
             new FetchMoviesTask().execute(Sort_By);
+        } else {
+
+            SharedPreferences pref =
+                    getActivity().getSharedPreferences(
+                            getString(R.string.pref_movie_name),
+                            Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            Log.d("Entered","favourtie");
+            String fM  = pref.getString(getString(R.string.pref_movie_key),
+                    null);
+            Log.d("Getting Movie ",fM );
+            String fMovies[] ;
+            if(fM!=null){
+                fMovies = fM.split("#");
+                mGridData.clear();
+                String rMovies[], vMovies[]  ;
+                reviews = new ArrayList<>();
+                videos = new ArrayList<>();
+                String[] movieDetails,reviewDetail,videoDetail;
+                Movie movieObj;
+                Review review;
+                Video video;
+                for(int i=0 ; i<fMovies .length ; i++){
+                    movieDetails=fMovies[i].split("|");
+                    movieObj = new Movie();
+
+                    movieObj.setMovieID(movieDetails[0]);
+                    movieObj.setPosterURL(movieDetails[1]);
+                    movieObj.setBackgroundUrl(movieDetails[2]);
+                    movieObj.setTitle(movieDetails[3]);
+                    movieObj.setOverview(movieDetails[4]);
+                    movieObj.setReleaseDate(movieDetails[5]);
+                    movieObj.setRating(movieDetails[6]);
+                    Log.d("Movie From Prefrence",
+                            " "+movieDetails[0] +
+                            " "+movieDetails[1] +
+                            " "+movieDetails[2] +
+                            " "+movieDetails[3] +
+                            " "+movieDetails[4] +
+                            " "+movieDetails[5] +
+                            " "+movieDetails[6] );
+                    rMovies = pref.getString(getString(R.string.pref_movie_name),
+                            null).split("#");
+                    for(int j=0 ; j <rMovies.length ; j++){
+                        reviewDetail =rMovies[i].split("|");
+                        review = new Review();
+                        Log.d("Review", "Author "+reviewDetail[0]
+                                        + "Content "+reviewDetail[1]);
+                        review.setAuthor(reviewDetail[0]);
+                        review.setContent(reviewDetail[1]);
+
+                        reviews.add(review);
+                    }
+                    vMovies =pref.getString(getString(R.string.pref_movie_name),
+                            null).split("#");
+                    for(int j=0 ; j <vMovies.length ; j++){
+                        videoDetail =vMovies[i].split("|");
+                        video = new Video();
+
+                        Log.d("Videos", "Title "+videoDetail[0]
+                                + "URL "+videoDetail[1]);
+                        video.setName(videoDetail[0]);
+                        video.setUrl(videoDetail[1]);
+
+                        videos.add(video);
+                    }
+
+                    mGridData.add(movieObj);
+                }
+                for(int q=0 ; q<mGridData.size() ; q++){
+
+                    Log.d("Favorite "+ q, "Backgorund "+mGridData.get(q).getBackgroundUrl()
+                                        + "Date " +mGridData.get(q).getReleaseDate()
+                                        + "Movie ID :" +mGridData.get(q).getMovieID()
+                                        + "Rting: "+mGridData.get(q).getRating()
+                                        +"Title" + mGridData.get(q).getTitle()
+                    );
+                }
+                mGridAdapter.setGridData(mGridData);
+                Log.d("Favorite", mGridData.toString());
+                Toast.makeText(getActivity(),
+                        "Here are your Movies",
+                        Toast.LENGTH_SHORT)
+                        .show();
+
+            }else {
+                Toast.makeText(getActivity(),
+                        "You Don't have any Favourite",
+                        Toast.LENGTH_SHORT)
+                        .show();
+
+            }
         }
 
+    }
+
+    void onLocationChanged( ) {
+        updateMovies();
+     //   getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+    }
+    private void updateMovies() {
+        FetchMoviesTask weatherTask = new FetchMoviesTask();
+        String location = getPreferredLocation(getActivity());
+        weatherTask.execute(location);
     }
 
     public static String getPreferredLocation(Context context) {
@@ -211,10 +328,10 @@ public class MainActivityFragment extends Fragment {
             try {
                 // Here Built URL
                 //http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&
-                // api_key=[your Key]
+                // api_key=8ab3b4fc3a364ee0e493c5b0aba84ed1
                 //TODO here u must go the webiste and get your own key by regesiter in it
                 final String Base_URLWithKey = "http://api.themoviedb.org/3/discover/movie?" +
-                        "api_key=[Your Key]";
+                        "api_key=8ab3b4fc3a364ee0e493c5b0aba84ed1";
                 final String SORT_PARAM = "sort_by";
 
                 Uri builtUri = Uri.parse(Base_URLWithKey).buildUpon()

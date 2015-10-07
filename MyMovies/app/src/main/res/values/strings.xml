@@ -21,4 +21,7 @@
     <string name="pref_sort_rate" translatable="false">vote_average.desc</string>
     <string name="pref_sort_favourite" translatable="false">favourite</string>
 
+    <string name="pref_movie_key">Movies</string>
+    <string name="pref_movie_name">Movies</string>
+
 </resources>
