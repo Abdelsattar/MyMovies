@@ -66,7 +66,6 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
     public detailMovieFragment() {
     }
 
-    //TODO implement this method
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -99,8 +98,6 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
 
         //TODO implement this to not crash
         if(bundle !=null){
-
-
             movieObj.setTitle(bundle.getString("title"));
             movieObj.setMovieID(bundle.getString("id"));
             movieObj.setPosterURL(bundle.getString("pURL"));
@@ -144,7 +141,7 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
                 @Override
                 public boolean onChildClick(ExpandableListView parent, View v,
                                             int groupPosition, int childPosition, long id) {
-                    // TODO Auto-generated method stub
+
 //                Toast.makeText(
 //                        getActivity().getApplicationContext(),
 //                        listDataHeader.get(groupPosition)
