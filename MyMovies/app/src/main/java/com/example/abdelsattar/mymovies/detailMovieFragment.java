@@ -208,12 +208,12 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
                 String Movies = pref.getString(getString(R.string.pref_movie_key), "");
                 String  movieDetail = "";
                // Log.d("Movie from sharedprefrence", Movies);
-                movieDetail= movieObj.getMovieID()+"$$"
-                            + movieObj.getPosterURL()+"$$"
-                            + movieObj.getBackgroundUrl()+"$$"
-                            + movieObj.getTitle()+"$$"
-                            + movieObj.getOverview()+"$$"
-                            + movieObj.getReleaseDate()+"$$"
+                movieDetail= movieObj.getMovieID()+"|"
+                            + movieObj.getPosterURL()+"|"
+                            + movieObj.getBackgroundUrl()+"|"
+                            + movieObj.getTitle()+"|"
+                            + movieObj.getOverview()+"|"
+                            + movieObj.getReleaseDate()+"|"
                             + movieObj.getRating()+'#';
 
                     boolean exist = pref.getBoolean(movieObj.getMovieID(), false);
@@ -227,14 +227,14 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
 
                         //buliding videos
                         for(int i=0 ; i<videosString.size(); i++){
-                            videos += videosString.get(i).getName()+"$$"
+                            videos += videosString.get(i).getName()+"|"
                                     +videosString.get(i).getUrl()
                                     +'#';
                         }
                         //buliding Reviews
                         for(int i=0 ; i<reviewsString.size(); i++){
-                            reviews += reviewsString.get(i).getAuthor()+"$$"
-                                    +reviewsString.get(i).getContent()+"$$"
+                            reviews += reviewsString.get(i).getAuthor()+"|"
+                                    +reviewsString.get(i).getContent()+"|"
                                     +reviewsString.get(i).getUrl()+
                                     +'#';
                         }

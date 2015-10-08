@@ -1,0 +1,41 @@
+You did a pretty good job here evaluating the result and working with JSON! This will be needed many times in your career. But let me make things easier for you: you can explore the Retrofit Library to download and serialize JSON results/requests! It's really good and handy ??
+
+Retrofit is a really powerful library to handle REST APIs with Java.
+
+It requires 3 types of files:
+
+1. A Rest interface
+It's a file that will have all your endpoints as java methods signatures. It will be created automagically by Retrofit later, all you have to do is to tell its name, arguments and return type.
+
+It doesn't matter which name you choose. You will use annotations to tell the route you want that method to access, so it would look something like:
+
+public interface GitHubService {
+  @GET("/users/{user}/repos")
+  List<Repo> listRepos(@Path("user") String user);
+}
+
+Where @GET is an annotation to use this method as a GET request, List<Repo> is the type of object listRepos() will return and @Path() is an annotation to replace {user} at the @GET path by a String given in String user argument.
+
+2. An implementation
+After having your interface declared, you will need to implement that. It's really easy, you can create a separate class (I like to call it Webservice.java) and use:
+
+Retrofit retrofit = new Retrofit.Builder()
+    .setEndpoint("https://api.github.com")
+    .build();
+GitHubService service = retrofit.create(GitHubService.class);
+
+Now, you have a variable service that accounts for every single method you have declared in your interface. You can access all of them, they will work!
+
+List<Repo> repos = service.listRepos("octocat");
+
+3. Models
+You can see the example above uses a Repo class. It is the representation of the returning JSON data. Remind yourself that JSON will be serialized to Java as following:
+Objects becomes Custom Objects
+Arrays = ArrayList<T>
+Integers = Integer
+Strings = String
+Null = null
+
+So a Repo class is a representation of a returning JSON source, but in Java. It makes your app looks very organized and help you to build better network interfaces.
+
+For more information, I recommend taking a look at the official documentation. There's a lot of examples there that you could take advantage of!

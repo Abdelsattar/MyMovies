@@ -99,12 +99,9 @@ public class MainActivityFragment extends Fragment {
             }
         });
 
-
-
         //--------------------
 
         if(savedInstanceState == null || !savedInstanceState.containsKey(SELECTED_KEY)) {
-
 
             mProgressBar.setVisibility(View.VISIBLE);
             //getting the setting value
@@ -128,13 +125,113 @@ public class MainActivityFragment extends Fragment {
                 mGridData.clear();
                 new FetchMoviesTask().execute(Sort_By);
             }
+            else {
+                SharedPreferences pref =
+                        getActivity().getSharedPreferences(
+                                getString(R.string.pref_movie_name),
+                                Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+//            Log.d("Entered","favourtie");
+                String fM  = pref.getString(getString(R.string.pref_movie_key),
+                        "");
+                // Log.d("Getting Movie ",fM );
+
+                String fMovies[] ;
+                if(fM!=null){
+
+                    fMovies = fM.split("#");
+                    mGridData.clear();
+                    String rMovies[], vMovies[]  ;
+                    reviews = new ArrayList<>();
+                    videos = new ArrayList<>();
+                    String [] movieDetails;
+                    String []reviewDetail;
+                    String [] videoDetail;
+                    Movie movieObj;
+                    Review review;
+                    Video video;
+
+
+                    for(int i=0 ; i<fMovies .length ; i++){
+                        movieDetails=fMovies[i].split("|");
+                        movieObj = new Movie();
+
+                        movieObj.setMovieID(movieDetails[0]);
+                        movieObj.setPosterURL(movieDetails[1]);
+                        movieObj.setBackgroundUrl(movieDetails[2]);
+                        movieObj.setTitle(movieDetails[3]);
+                        movieObj.setOverview(movieDetails[4]);
+                        movieObj.setReleaseDate(movieDetails[5]);
+                        movieObj.setRating(movieDetails[6]);
+
+                        Log.d("Movie From Prefrence",
+                                " ---  "+movieDetails[0] +
+                                        " --- "+movieDetails[1] +
+                                        " ---"+movieDetails[2] +
+                                        " ---- "+movieDetails[3] +
+                                        " ---  "+movieDetails[4] +
+                                        " --- "+movieDetails[5] +
+                                        " --- "+movieDetails[6] );
+
+                        rMovies = pref.getString(getString(R.string.pref_movie_name),
+                                null).split("#");
+                        for(int j=0 ; j <rMovies.length ; j++){
+                            reviewDetail =rMovies[i].split("|");
+                            review = new Review();
+//                        Log.d("Review", "Author "+reviewDetail[0]
+//                                        + "Content "+reviewDetail[1]);
+                            review.setAuthor(reviewDetail[0]);
+                            review.setContent(reviewDetail[1]);
+
+                            reviews.add(review);
+                        }
+                        vMovies =pref.getString(getString(R.string.pref_movie_name),
+                                null).split("#");
+                        for(int j=0 ; j <vMovies.length ; j++){
+                            videoDetail =vMovies[i].split("|");
+                            video = new Video();
+
+//                        Log.d("Videos", "Title "+videoDetail[0]
+//                                + "URL "+videoDetail[1]);
+                            video.setName(videoDetail[0]);
+                            video.setUrl(videoDetail[1]);
+
+                            videos.add(video);
+                        }
+
+                        mGridData.add(movieObj);
+                    }
+//                for(int q=0 ; q<mGridData.size() ; q++){
+//
+//                    Log.d("Favorite "+ q, "Backgorund "+mGridData.get(q).getBackgroundUrl()
+//                                        + "Date " +mGridData.get(q).getReleaseDate()
+//                                        + "Movie ID :" +mGridData.get(q).getMovieID()
+//                                        + "Rting: "+mGridData.get(q).getRating()
+//                                        +"Title" + mGridData.get(q).getTitle()
+//                    );
+//                }
+                    mGridAdapter.setGridData(mGridData);
+//                Log.d("Favorite", mGridData.toString());
+                    Toast.makeText(getActivity(),
+                            "Here are your Movies",
+                            Toast.LENGTH_SHORT)
+                            .show();
+
+                }else {
+                    Toast.makeText(getActivity(),
+                            "You Don't have any Favourite",
+                            Toast.LENGTH_SHORT)
+                            .show();
+
+                }
+            }
         }else {
 
 
-            Toast.makeText(getActivity(),
-                    "hey  Else " ,
-                    Toast.LENGTH_SHORT)
-                    .show();
+//            Toast.makeText(getActivity(),
+//                    "hey  Else " ,
+//                    Toast.LENGTH_SHORT)
+//                    .show();
             mGridData = savedInstanceState.getParcelableArrayList(SELECTED_KEY);
 
             mGridAdapter = new ImageAdapter(getActivity(), R.layout.grid_item_layout, mGridData);
@@ -157,109 +254,6 @@ public class MainActivityFragment extends Fragment {
         //Start download
 
         /*
-        else {
-
-
-
-            SharedPreferences pref =
-                    getActivity().getSharedPreferences(
-                            getString(R.string.pref_movie_name),
-                            Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = pref.edit();
-//            Log.d("Entered","favourtie");
-            String fM  = pref.getString(getString(R.string.pref_movie_key),
-                    "");
-           // Log.d("Getting Movie ",fM );
-
-            String fMovies[] ;
-            if(fM!=null){
-
-                fMovies = fM.split("#");
-                mGridData.clear();
-                String rMovies[], vMovies[]  ;
-                reviews = new ArrayList<>();
-                videos = new ArrayList<>();
-                String [] movieDetails;
-                String []reviewDetail;
-                String [] videoDetail;
-                Movie movieObj;
-                Review review;
-                Video video;
-
-
-                for(int i=0 ; i<fMovies .length ; i++){
-                    movieDetails=fMovies[i].split("|");
-                    movieObj = new Movie();
-
-                    movieObj.setMovieID(movieDetails[0]);
-                    movieObj.setPosterURL(movieDetails[1]);
-                    movieObj.setBackgroundUrl(movieDetails[2]);
-                    movieObj.setTitle(movieDetails[3]);
-                    movieObj.setOverview(movieDetails[4]);
-                    movieObj.setReleaseDate(movieDetails[5]);
-                    movieObj.setRating(movieDetails[6]);
-
-                    Log.d("Movie From Prefrence",
-                            " ---  "+movieDetails[0] +
-                            " --- "+movieDetails[1] +
-                            " ---"+movieDetails[2] +
-                            " ---- "+movieDetails[3] +
-                            " ---  "+movieDetails[4] +
-                            " --- "+movieDetails[5] +
-                            " --- "+movieDetails[6] );
-
-                    rMovies = pref.getString(getString(R.string.pref_movie_name),
-                            null).split("#");
-                    for(int j=0 ; j <rMovies.length ; j++){
-                        reviewDetail =rMovies[i].split("|");
-                        review = new Review();
-//                        Log.d("Review", "Author "+reviewDetail[0]
-//                                        + "Content "+reviewDetail[1]);
-                        review.setAuthor(reviewDetail[0]);
-                        review.setContent(reviewDetail[1]);
-
-                        reviews.add(review);
-                    }
-                    vMovies =pref.getString(getString(R.string.pref_movie_name),
-                            null).split("#");
-                    for(int j=0 ; j <vMovies.length ; j++){
-                        videoDetail =vMovies[i].split("|");
-                        video = new Video();
-
-//                        Log.d("Videos", "Title "+videoDetail[0]
-//                                + "URL "+videoDetail[1]);
-                        video.setName(videoDetail[0]);
-                        video.setUrl(videoDetail[1]);
-
-                        videos.add(video);
-                    }
-
-                    mGridData.add(movieObj);
-                }
-//                for(int q=0 ; q<mGridData.size() ; q++){
-//
-//                    Log.d("Favorite "+ q, "Backgorund "+mGridData.get(q).getBackgroundUrl()
-//                                        + "Date " +mGridData.get(q).getReleaseDate()
-//                                        + "Movie ID :" +mGridData.get(q).getMovieID()
-//                                        + "Rting: "+mGridData.get(q).getRating()
-//                                        +"Title" + mGridData.get(q).getTitle()
-//                    );
-//                }
-                mGridAdapter.setGridData(mGridData);
-//                Log.d("Favorite", mGridData.toString());
-                Toast.makeText(getActivity(),
-                        "Here are your Movies",
-                        Toast.LENGTH_SHORT)
-                        .show();
-
-            }else {
-                Toast.makeText(getActivity(),
-                        "You Don't have any Favourite",
-                        Toast.LENGTH_SHORT)
-                        .show();
-
-            }
-        }
 
     }*/
 
@@ -276,12 +270,12 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Log.d("Save instance ", mGridData.toString());
+ //       Log.d("Save instance ", mGridData.toString());
 
-        Toast.makeText(getActivity(),
-                "Here are your Movies",
-                Toast.LENGTH_SHORT)
-                .show();
+//        Toast.makeText(getActivity(),
+//                "Here are your Movies",
+//                Toast.LENGTH_SHORT)
+//                .show();
         outState.putParcelableArrayList(SELECTED_KEY, mGridData);
         super.onSaveInstanceState(outState);
     }
