@@ -12,6 +12,7 @@ public class MainActivity extends ActionBarActivity {
 
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
     private boolean mTwoPane;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +47,7 @@ public class MainActivity extends ActionBarActivity {
 //        if (location != null && !location.equals(mLocation)) {
 //            MainActivityFragment ff = (MainActivityFragment)getSupportFragmentManager().findFragmentById(R.id.fragment);
 //            if ( null != ff ) {
-//                ff.onLocationChanged();
+//                ff.onSortChanged();
 //            }
 //            mLocation = location;
 //        }

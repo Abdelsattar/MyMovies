@@ -91,55 +91,60 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
         Bundle bundle = getActivity().getIntent().getExtras();
         movieObj = new Movie();
 
+
         TextView titleTV = (TextView) rootView.findViewById(R.id.titleTV);
         TextView overviewTV = (TextView) rootView.findViewById(R.id.overviewTV);
         TextView releaseDateTV = (TextView) rootView.findViewById(R.id.rDateTV);
         TextView ratingTV = (TextView) rootView.findViewById(R.id.ratingTV);
 
-        movieObj.setTitle(bundle.getString("title"));
-        movieObj.setMovieID(bundle.getString("id"));
-        movieObj.setPosterURL(bundle.getString("pURL"));
-        movieObj.setOverview(bundle.getString("overview"));
-        movieObj.setRating(bundle.getString("rating"));
-        movieObj.setRating(bundle.getString("rDate"));
-
-        titleTV.setText(movieObj.getTitle());
-        overviewTV.setText(movieObj.getOverview());
-        releaseDateTV.setText(movieObj.getReleaseDate());
-        ratingTV.setText(movieObj.getRating());
+        //TODO implement this to not crash
+        if(bundle !=null){
 
 
-        ImageView bgImage = (ImageView) rootView.findViewById(R.id.bgImage);
-        Picasso.with(getActivity())
-                .load(bundle.getString("pURL"))
-                .into(bgImage);
+            movieObj.setTitle(bundle.getString("title"));
+            movieObj.setMovieID(bundle.getString("id"));
+            movieObj.setPosterURL(bundle.getString("pURL"));
+            movieObj.setOverview(bundle.getString("overview"));
+            movieObj.setRating(bundle.getString("rating"));
+            movieObj.setRating(bundle.getString("rDate"));
 
-        FetchVideoDetailTask videoDetailTask = new FetchVideoDetailTask();
-        videoDetailTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,movieObj.getMovieID());
+            titleTV.setText(movieObj.getTitle());
+            overviewTV.setText(movieObj.getOverview());
+            releaseDateTV.setText(movieObj.getReleaseDate());
+            ratingTV.setText(movieObj.getRating());
 
-        FetchReviewDetailTask reviewDetailTask = new FetchReviewDetailTask();
-        reviewDetailTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,movieObj.getMovieID());
-     /******************  implementing Expandable list   ************************** */
 
-        // get the listview
-        expListView = (ExpandableListView) rootView.findViewById(R.id.lvExp);
+            ImageView bgImage = (ImageView) rootView.findViewById(R.id.bgImage);
+            Picasso.with(getActivity())
+                    .load(bundle.getString("pURL"))
+                    .into(bgImage);
 
-        // preparing list data
+            FetchVideoDetailTask videoDetailTask = new FetchVideoDetailTask();
+            videoDetailTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,movieObj.getMovieID());
 
-        listDataChild = new HashMap<String, List<Object>>();
-        listDataHeader = new ArrayList<String>();
-        listDataHeader.add("Videos");
-        listDataHeader.add("Reviews");
+            FetchReviewDetailTask reviewDetailTask = new FetchReviewDetailTask();
+            reviewDetailTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,movieObj.getMovieID());
+            /******************  implementing Expandable list   ************************** */
 
-        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
+            // get the listview
+            expListView = (ExpandableListView) rootView.findViewById(R.id.lvExp);
 
-        expListView.setAdapter(listAdapter);
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            // preparing list data
 
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-                // TODO Auto-generated method stub
+            listDataChild = new HashMap<String, List<Object>>();
+            listDataHeader = new ArrayList<String>();
+            listDataHeader.add("Videos");
+            listDataHeader.add("Reviews");
+
+            listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
+
+            expListView.setAdapter(listAdapter);
+            expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+                @Override
+                public boolean onChildClick(ExpandableListView parent, View v,
+                                            int groupPosition, int childPosition, long id) {
+                    // TODO Auto-generated method stub
 //                Toast.makeText(
 //                        getActivity().getApplicationContext(),
 //                        listDataHeader.get(groupPosition)
@@ -149,32 +154,34 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
 //                                childPosition)
 //                        , Toast.LENGTH_SHORT)
 //                        .show();
-                String UrlToView;
-                if(groupPosition==0){
-                    Video video= (Video) listDataChild.get(listDataHeader.get(groupPosition))
-                            .get(childPosition);
-                    UrlToView = video.getUrl();
+                    String UrlToView;
+                    if(groupPosition==0){
+                        Video video= (Video) listDataChild.get(listDataHeader.get(groupPosition))
+                                .get(childPosition);
+                        UrlToView = video.getUrl();
+                    }
+                    else {
+
+                        Review review= (Review) listDataChild.get(listDataHeader.get(groupPosition))
+                                .get(childPosition);
+                        UrlToView = review.getUrl();
+                    }
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UrlToView)));
+                    return false;
                 }
-                else {
+            });
 
-                    Review review= (Review) listDataChild.get(listDataHeader.get(groupPosition))
-                            .get(childPosition);
-                    UrlToView = review.getUrl();
+            expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
+                @Override
+                public boolean onGroupClick(ExpandableListView parent, View v,int groupPosition, long id) {
+                    setListViewHeight(parent, groupPosition);
+                    return false;
                 }
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(UrlToView)));
-                return false;
-            }
-        });
+            });
 
-        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
 
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v,int groupPosition, long id) {
-                setListViewHeight(parent, groupPosition);
-                return false;
-            }
-        });
-
+        }
         /****************** *****************************  ************************** */
         Button favourite = (Button) rootView.findViewById(R.id.favourite);
         favourite.setOnClickListener(this);
@@ -196,23 +203,18 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
                                 getString(R.string.pref_movie_name),
                                 Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
-
+                    editor.clear();
+                    editor.commit();
                 String Movies = pref.getString(getString(R.string.pref_movie_key), "");
                 String  movieDetail = "";
                // Log.d("Movie from sharedprefrence", Movies);
-                movieDetail= movieObj.getMovieID()+'|'
-                            + movieObj.getPosterURL()+'|'
-                            + movieObj.getBackgroundUrl()+'|'
-                            + movieObj.getTitle()+'|'
-                            + movieObj.getOverview()+'|'
-                            + movieObj.getReleaseDate()+'|'
+                movieDetail= movieObj.getMovieID()+"$$"
+                            + movieObj.getPosterURL()+"$$"
+                            + movieObj.getBackgroundUrl()+"$$"
+                            + movieObj.getTitle()+"$$"
+                            + movieObj.getOverview()+"$$"
+                            + movieObj.getReleaseDate()+"$$"
                             + movieObj.getRating()+'#';
-
-//                if (Movies != null) {
-//
-//
-//                    Log.d("Videos", "ifaya");
-//                } else {
 
                     boolean exist = pref.getBoolean(movieObj.getMovieID(), false);
                     if(!exist){
@@ -225,14 +227,14 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
 
                         //buliding videos
                         for(int i=0 ; i<videosString.size(); i++){
-                            videos += videosString.get(i).getName()+'|'
+                            videos += videosString.get(i).getName()+"$$"
                                     +videosString.get(i).getUrl()
                                     +'#';
                         }
                         //buliding Reviews
                         for(int i=0 ; i<reviewsString.size(); i++){
-                            reviews += reviewsString.get(i).getAuthor()+'|'
-                                    +reviewsString.get(i).getContent()+'|'
+                            reviews += reviewsString.get(i).getAuthor()+"$$"
+                                    +reviewsString.get(i).getContent()+"$$"
                                     +reviewsString.get(i).getUrl()+
                                     +'#';
                         }
@@ -247,10 +249,11 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
                         Log.d("Reviews", reviews);
                         editor.commit();
 
-                        videos = pref
-                        Log.d("Videos from pref when click", videos);
-                        Log.d("Reviewsfrom pref when click", reviews);
+//                        String mLOL = pref.getString("Movies","HEY");
 
+//                        Log.d("mMOvies from pref when click", mLOL);
+//                        Log.d("Reviewsfrom pref when click", reviews);
+//
 
     //                }
 
