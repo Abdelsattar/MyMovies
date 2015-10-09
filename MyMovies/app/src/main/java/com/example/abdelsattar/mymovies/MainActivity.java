@@ -12,11 +12,13 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
     private boolean mTwoPane;
+    private String mSort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+         mSort = MainActivityFragment.getPreferredSort(this);
 
         if (findViewById(R.id. movie_detail_container) != null) {
             // The detail container view will be present only in the large-screen layouts
@@ -41,16 +43,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //String location = Utility.getPreferredLocation( this );
-        // TODO reuse this code to fit to movie
-        // update the location in our second pane using the fragment manager
-//        if (location != null && !location.equals(mLocation)) {
-//            MainActivityFragment ff = (MainActivityFragment)getSupportFragmentManager().findFragmentById(R.id.fragment);
-//            if ( null != ff ) {
-//                ff.onSortChanged();
-//            }
-//            mLocation = location;
-//        }
+        String sort = MainActivityFragment.getPreferredSort( this );
+//        update the sort in our second pane using the fragment manager
+//        TODO reuse this code to fit to movie
+        if (sort != null && !sort.equals(mSort)) {
+            MainActivityFragment ff =
+                          (MainActivityFragment)getSupportFragmentManager()
+                              .findFragmentById(R.id.fragment);
+            if ( null != ff ) {
+                ff.onSortChanged();
+            }
+            mSort = sort;
+        }
     }
 
 

@@ -105,7 +105,7 @@ public class MainActivityFragment extends Fragment {
 
             mProgressBar.setVisibility(View.VISIBLE);
             //getting the setting value
-            String Sort_By = getPreferredLocation(getActivity());
+            String Sort_By = getPreferredSort(getActivity());
             // favourite
             String Fav =getString(R.string.pref_sort_favourite);
             String pop =getString(R.string.pref_sort_popular);
@@ -246,16 +246,13 @@ public class MainActivityFragment extends Fragment {
 
     }
 
-    /*
+
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(SELECTED_KEY, mGridData);
+        super.onSaveInstanceState(outState);
+    }
 
-        //Start download
-
-        /*
-
-    }*/
 
     @Override
     public void onResume() {
@@ -266,29 +263,18 @@ public class MainActivityFragment extends Fragment {
     void onSortChanged( ) {
         updateMovies();
      //   getLoaderManager().restartLoader(FORECAST_LOADER, null, this);
+        mGridData.clear();
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
- //       Log.d("Save instance ", mGridData.toString());
-
-//        Toast.makeText(getActivity(),
-//                "Here are your Movies",
-//                Toast.LENGTH_SHORT)
-//                .show();
-        outState.putParcelableArrayList(SELECTED_KEY, mGridData);
-        super.onSaveInstanceState(outState);
-    }
-
 
     private void updateMovies() {
-        FetchMoviesTask weatherTask = new FetchMoviesTask();
-        String location = getPreferredLocation(getActivity());
-        weatherTask.execute(location);
+        FetchMoviesTask moviesTask = new FetchMoviesTask();
+        String sort = getPreferredSort(getActivity());
+        moviesTask.execute(sort);
     }
 
-    public static String getPreferredLocation(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    public static String getPreferredSort(Context context) {
+        SharedPreferences prefs = PreferenceManager
+                                    .getDefaultSharedPreferences(context);
         return prefs.getString(context.getString(R.string.pref_sort_key),
                 context.getString(R.string.pref_sort_default));
     }

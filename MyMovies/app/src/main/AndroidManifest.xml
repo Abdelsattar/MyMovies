@@ -28,7 +28,11 @@
         </activity>
         <activity
             android:name=".detailMovie"
-            android:label="@string/title_activity_detail_movie" >
+            android:label="@string/title_activity_detail_movie"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.abdelsattar.mymovies.MainActivity" />
         </activity>
     </application>
 
