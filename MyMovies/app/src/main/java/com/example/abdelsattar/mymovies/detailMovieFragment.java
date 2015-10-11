@@ -44,6 +44,7 @@ import java.util.List;
 public class detailMovieFragment extends Fragment implements  View.OnClickListener{
     private ArrayList<Object> reviewsData;
     private ArrayList<Object> videosData;
+    static String ID_KEY="id_key";
 
     private ArrayList<Review> reviewsString;
     private ArrayList<Video> videosString;
@@ -71,10 +72,20 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
         super.onActivityCreated(savedInstanceState);
     }
 
+    public static detailMovieFragment newInstance(Bundle args)
+    {
+        detailMovieFragment fragmentInstance = new detailMovieFragment();
+        if(args != null)
+        {
+            fragmentInstance.setArguments(args);
+        }
+        return fragmentInstance;
+    }
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
+
 
     @Override
     public void onResume() {
@@ -142,15 +153,6 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
                 public boolean onChildClick(ExpandableListView parent, View v,
                                             int groupPosition, int childPosition, long id) {
 
-//                Toast.makeText(
-//                        getActivity().getApplicationContext(),
-//                        listDataHeader.get(groupPosition)
-//                                + " : " + groupPosition+" "
-//                                + listDataChild.get(
-//                                listDataHeader.get(groupPosition)).get(
-//                                childPosition)
-//                        , Toast.LENGTH_SHORT)
-//                        .show();
                     String UrlToView;
                     if(groupPosition==0){
                         Video video= (Video) listDataChild.get(listDataHeader.get(groupPosition))
@@ -191,7 +193,7 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
     @Override
     public void onClick(View view) {
 
-                Log.d("Videos", "d5l favourite");
+              //  Log.d("Videos", "d5l favourite");
                 // i will put all data of the movie in an shared prefrence based on id
                 // and put also reviews videos details
                 // will diffrenation bu delmiter

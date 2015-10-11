@@ -1,5 +1,6 @@
 package com.example.abdelsattar.mymovies;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -48,6 +49,29 @@ public class MainActivityFragment extends Fragment {
     private ImageAdapter mGridAdapter;
     private ArrayList<Movie> mGridData;
 
+    OnItemClickedListener mListener   = sDummyCallbacks;
+
+    private static OnItemClickedListener sDummyCallbacks = new OnItemClickedListener() {
+        @Override
+        public void OnItemClicked(Movie item) {
+        }
+    };
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnItemClickedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnItemClickedListener");
+        }
+    }
+
+    public interface OnItemClickedListener {
+        public void OnItemClicked(Movie item);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +79,15 @@ public class MainActivityFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    public static MainActivityFragment newInstance(Bundle args)
+    {
+        MainActivityFragment fragmentInstance = new MainActivityFragment();
+        if(args != null)
+        {
+            fragmentInstance.setArguments(args);
+        }
+        return fragmentInstance;
+    }
     public MainActivityFragment() {
     }
 
@@ -78,6 +111,7 @@ public class MainActivityFragment extends Fragment {
         //Grid view click event
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+
                 //Get item at position
                 Movie item = (Movie) parent.getItemAtPosition(position);
 
@@ -93,6 +127,8 @@ public class MainActivityFragment extends Fragment {
                         putExtra("pURL"     , item.getPosterURL());
 
                 mPosition = position;
+
+                mListener.OnItemClicked(item);
                 //Start details activity
                 startActivity(intent);
 
@@ -112,15 +148,15 @@ public class MainActivityFragment extends Fragment {
             String rate =getString(R.string.pref_sort_rate);
 
 
-            Toast.makeText(getActivity(),
-                    "hey_there "+Sort_By ,
-                    Toast.LENGTH_SHORT)
-                    .show();
+//            Toast.makeText(getActivity(),
+//                    "hey_there "+Sort_By ,
+//                    Toast.LENGTH_SHORT)
+//                    .show();
             if ( Sort_By.contentEquals(pop)  || Sort_By.contentEquals(rate) ) {
-                Toast.makeText(getActivity(),
-                        "hey_there "+Sort_By ,
-                        Toast.LENGTH_SHORT)
-                        .show();
+//                Toast.makeText(getActivity(),
+//                        "hey_there "+Sort_By ,
+//                        Toast.LENGTH_SHORT)
+//                        .show();
                 //  Log.d("Sort BY",Sort_By);
                 mGridData.clear();
                 new FetchMoviesTask().execute(Sort_By);
