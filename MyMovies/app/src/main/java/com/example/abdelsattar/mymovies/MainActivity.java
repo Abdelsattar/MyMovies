@@ -56,7 +56,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
         FragmentTransaction ft = fm.beginTransaction();
 
-        detailMovieFragment fragment = detailMovieFragment.newInstance(args);
+        detailMovieFragment fragment
+                = detailMovieFragment.newInstance(args);
 
         ft.replace(R.id.movie_detail_container, fragment)
                 .commit();
@@ -68,13 +69,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
         FragmentTransaction ft = fm.beginTransaction();
 
-        MainActivityFragment fragment  = MainActivityFragment.newInstance(args);
+        MainActivityFragment fragment
+                = MainActivityFragment.newInstance(args);
 
         ft.add(R.id.fragment, fragment);
         ft.commit();
     }
-
-    /*
+ /*
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,7 +101,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             }
     }
 */
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -139,7 +139,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         }
         else
         {
-
             Intent intent = new Intent(getApplication(), detailMovie.class);
 
             //Pass the movie details DetailsActivity
@@ -150,14 +149,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
                     putExtra("id"    , item.getMovieID()).
                     putExtra("pURL"     , item.getPosterURL()).
                     putExtra("pURL"     , item.getPosterURL());
-
           //  mPosition = position;
             //Start details activity
             startActivity(intent);
         }
-
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

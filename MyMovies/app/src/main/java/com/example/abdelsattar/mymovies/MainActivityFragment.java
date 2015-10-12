@@ -129,6 +129,7 @@ public class MainActivityFragment extends Fragment {
                 mPosition = position;
 
                 mListener.OnItemClicked(item);
+                
                 //Start details activity
                 startActivity(intent);
 
@@ -148,26 +149,18 @@ public class MainActivityFragment extends Fragment {
             String rate =getString(R.string.pref_sort_rate);
 
 
-//            Toast.makeText(getActivity(),
-//                    "hey_there "+Sort_By ,
-//                    Toast.LENGTH_SHORT)
-//                    .show();
-            if ( Sort_By.contentEquals(pop)  || Sort_By.contentEquals(rate) ) {
-//                Toast.makeText(getActivity(),
-//                        "hey_there "+Sort_By ,
-//                        Toast.LENGTH_SHORT)
-//                        .show();
-                //  Log.d("Sort BY",Sort_By);
-                mGridData.clear();
-                new FetchMoviesTask().execute(Sort_By);
-            }
-            else {
+            Toast.makeText(getActivity(),
+                    "hey_there "+Sort_By ,
+                    Toast.LENGTH_SHORT)
+                    .show();
+
+         if (Sort_By.contentEquals(Fav)) {
                 SharedPreferences pref =
                         getActivity().getSharedPreferences(
                                 getString(R.string.pref_movie_name),
                                 Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
-//            Log.d("Entered","favourtie");
+            Log.d("Entered","favourtie");
                 String fM  = pref.getString(getString(R.string.pref_movie_key),
                         "");
                 // Log.d("Getting Movie ",fM );
@@ -187,7 +180,6 @@ public class MainActivityFragment extends Fragment {
                     Review review;
                     Video video;
 
-
                     for(int i=0 ; i<fMovies .length ; i++){
                         movieDetails=fMovies[i].split("|");
                         movieObj = new Movie();
@@ -200,14 +192,14 @@ public class MainActivityFragment extends Fragment {
                         movieObj.setReleaseDate(movieDetails[5]);
                         movieObj.setRating(movieDetails[6]);
 
-                        Log.d("Movie From Prefrence",
-                                " ---  "+movieDetails[0] +
-                                        " --- "+movieDetails[1] +
-                                        " ---"+movieDetails[2] +
-                                        " ---- "+movieDetails[3] +
-                                        " ---  "+movieDetails[4] +
-                                        " --- "+movieDetails[5] +
-                                        " --- "+movieDetails[6] );
+//                        Log.d("Movie From Prefrence",
+//                                " ---  "+movieDetails[0] +
+//                                        " --- "+movieDetails[1] +
+//                                        " ---"+movieDetails[2] +
+//                                        " ---- "+movieDetails[3] +
+//                                        " ---  "+movieDetails[4] +
+//                                        " --- "+movieDetails[5] +
+//                                        " --- "+movieDetails[6] );
 
                         rMovies = pref.getString(getString(R.string.pref_movie_name),
                                 null).split("#");
@@ -260,14 +252,26 @@ public class MainActivityFragment extends Fragment {
                             .show();
 
                 }
-            }
+            } else   if ( Sort_By.contentEquals(pop)  || Sort_By.contentEquals(rate) ) {
+                Toast.makeText(getActivity(),
+                        "hey_there "+Sort_By ,
+                        Toast.LENGTH_SHORT)
+                        .show();
+               Log.d("Sort BY",Sort_By);
+             mGridData.clear();
+             new FetchMoviesTask().execute(Sort_By);
+         } else {
+             mGridData.clear();
+             new FetchMoviesTask().execute(pop);
+         }
+
         }else {
 
 
-//            Toast.makeText(getActivity(),
-//                    "hey  Else " ,
-//                    Toast.LENGTH_SHORT)
-//                    .show();
+            Toast.makeText(getActivity(),
+                    "hey  Else " ,
+                    Toast.LENGTH_SHORT)
+                    .show();
             mGridData = savedInstanceState.getParcelableArrayList(SELECTED_KEY);
 
             mGridAdapter = new ImageAdapter(getActivity(), R.layout.grid_item_layout, mGridData);
@@ -317,7 +321,7 @@ public class MainActivityFragment extends Fragment {
 
     public class FetchMoviesTask extends AsyncTask<String, Void, String[]> {
 
-        private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
+            private final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
         /**
          * Take the String representing the complete forecast in JSON Format and
@@ -481,7 +485,6 @@ public class MainActivityFragment extends Fragment {
             // This will only happen if there was an error getting or parsing the forecast.
             return null;
         }
-
         @Override
         protected void onPostExecute(String[] result) {
             //  /**************
@@ -490,7 +493,6 @@ public class MainActivityFragment extends Fragment {
                         "Data is processing now!",
                         Toast.LENGTH_SHORT).
                         show();
-
                 mGridAdapter.setGridData(mGridData);
 
             } else {

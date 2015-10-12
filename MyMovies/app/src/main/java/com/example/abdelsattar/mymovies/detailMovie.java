@@ -57,14 +57,14 @@ public class detailMovie extends AppCompatActivity {
             }
         }
     }
-
     private void showTweetDetailFragment(Bundle args)
     {
         FragmentManager fm = getSupportFragmentManager();
 
         FragmentTransaction ft = fm.beginTransaction();
 
-        detailMovieFragment fragment =  detailMovieFragment.newInstance(args);
+        detailMovieFragment fragment
+                =  detailMovieFragment.newInstance(args);
 
         ft.add(R.id.fragment, fragment);
         ft.commit();

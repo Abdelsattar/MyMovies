@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -64,13 +63,6 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
         setHasOptionsMenu(true);
     }
 
-    public detailMovieFragment() {
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
     public static detailMovieFragment newInstance(Bundle args)
     {
@@ -81,6 +73,12 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
         }
         return fragmentInstance;
     }
+/*
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -91,6 +89,7 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
     public void onResume() {
         super.onResume();
     }
+    */
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
