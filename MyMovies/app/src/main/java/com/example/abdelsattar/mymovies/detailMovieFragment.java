@@ -106,7 +106,7 @@ public class detailMovieFragment extends Fragment implements  View.OnClickListen
         TextView releaseDateTV = (TextView) rootView.findViewById(R.id.rDateTV);
         TextView ratingTV = (TextView) rootView.findViewById(R.id.ratingTV);
 
-        //TODO implement this to not crash
+
         if(bundle !=null){
             movieObj.setTitle(bundle.getString("title"));
             movieObj.setMovieID(bundle.getString("id"));

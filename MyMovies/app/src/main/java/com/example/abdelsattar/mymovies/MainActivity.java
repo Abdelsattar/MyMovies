@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity implements MainActivityFragment.OnItemClickedListener {
@@ -30,10 +31,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
             mTwoPane = true;
             // If we're being restored from a previous state, don't need to do anything
             // and should return or else we could end up with overlapping fragments.
-            if (savedInstanceState != null)
-            {
-                return;
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, new detailMovieFragment())
+                        .commit();
             }
+//            if (savedInstanceState != null)
+//            {
+//                return;
+//            }
             else
             {
                 // In two-pane mode, show the detail view in this activity by
@@ -61,6 +67,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 
         ft.replace(R.id.movie_detail_container, fragment)
                 .commit();
+
+        Toast.makeText(getApplication(),
+                "Hello Fragment",
+                Toast.LENGTH_SHORT)
+                .show();
     }
 
     private void showMainFragment(Bundle args)
@@ -135,7 +146,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
                     args.putString("pURL"     , item.getPosterURL());
                     args.putString("pURL"     , item.getPosterURL());
 
-            showDetailFragment(args);
+           showDetailFragment(args);
+//            detailMovieFragment fragment = new detailMovieFragment();
+//            fragment.setArguments(args);
+//
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.movie_detail_container,
+//                            fragment)
+//                    .commit();
+
         }
         else
         {

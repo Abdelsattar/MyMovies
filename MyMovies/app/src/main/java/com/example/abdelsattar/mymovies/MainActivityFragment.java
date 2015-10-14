@@ -128,8 +128,9 @@ public class MainActivityFragment extends Fragment {
 
                 mPosition = position;
 
+
                 mListener.OnItemClicked(item);
-                
+
                 //Start details activity
                 startActivity(intent);
 
